@@ -18,12 +18,7 @@ import java.util.Collection;
 public class OrderTest {
 
     private WebDriver driver;
-
-    @Before
-    public void setUp() {
-        driver = new ChromeDriver();
-        driver.get("https://qa-scooter.praktikum-services.ru/");
-    }
+    private static final String URL = "https://qa-scooter.praktikum-services.ru/";
 
     private final String name;
     private final String lastName;
@@ -34,9 +29,10 @@ public class OrderTest {
     private final String rentalPeriod;
     private final String color;
     private final String comment;
+    private final String buttonType;
 
     public OrderTest(String name, String lastName, String address, String metro, String phone,
-                     String date, String rentalPeriod, String color, String comment) {
+                     String date, String rentalPeriod, String color, String comment, String buttonType) {
         this.name = name;
         this.lastName = lastName;
         this.address = address;
@@ -46,6 +42,14 @@ public class OrderTest {
         this.rentalPeriod = rentalPeriod;
         this.color = color;
         this.comment = comment;
+        this.buttonType = buttonType;
+    }
+
+    @Before
+    public void setUp() {
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.get(URL);
     }
 
     @Parameterized.Parameters
@@ -53,45 +57,27 @@ public class OrderTest {
         return Arrays.asList(new Object[][]{
                 {
                         "Елена", "Кострова", "Москва, ул. Бобруйская", "Кунцевская",
-                        "89099073577", "10.07.2026", "сутки", "black", "Позвонить за 5 минут"
+                        "89099073577", "10.07.2026", "сутки", "black", "Позвонить за 5 минут", "up"
                 },
                 {
                         "Алексей", "Смирнов", "Москва, ул. Ленина", "Сокольники",
-                        "89919682020", "12.07.2026", "двое суток", "grey", "Не звонить"
+                        "89919682020", "12.07.2026", "двое суток", "grey", "Не звонить", "down"
                 }
         });
     }
 
     @Test
-    public void makeOrderFromUpButton() {
+    public void makeOrderTest() {
 
         MainPage mainPage = new MainPage(driver);
         mainPage.acceptCookies();
-        mainPage.clickOrderUp();
 
-        OrderPage orderPage = new OrderPage(driver);
-
-        // Первая форма
-        orderPage.fillFirstForm(name, lastName, address, metro, phone);
-
-        // Вторая форма
-        orderPage.fillSecondForm(date, rentalPeriod, color, comment);
-
-
-        // Подтверждение
-        orderPage.confirmOrder();
-
-        // Проверка
-        String successText = orderPage.getOrderSuccessText();
-        assertTrue("Заказ не оформлен", successText.contains("Заказ оформлен"));
-    }
-
-    @Test
-    public void makeOrderFromDownButton() {
-
-        MainPage mainPage = new MainPage(driver);
-        mainPage.acceptCookies();
-        mainPage.clickOrderDown();
+        // Выбор кнокпи по параметру
+        if (buttonType.equals("up")) {
+            mainPage.clickOrderUp();
+        } else {
+            mainPage.clickOrderDown();
+        }
 
         OrderPage orderPage = new OrderPage(driver);
 

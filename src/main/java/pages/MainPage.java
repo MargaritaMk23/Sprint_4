@@ -26,14 +26,12 @@ public class MainPage {
          return By.id("accordion__panel-" + index);
      }
 
-     // Кнопка "Заказать" вверху
-    private final By orderButtonUp = By.xpath("//button[text()='Заказать']");
-
-     // Кнопка "Заказать" внизу
-    private final By orderButtonDown = By.xpath("(//button[text()='Заказать'])[2]");
-
     // Cookies
     private final By cookieButton = By.id("rcc-confirm-button");
+
+    // Кнопки "Заказать"
+    private final By orderButtonUp = By.xpath("//button[text()='Заказать']");
+    private final By orderButtonDown = By.xpath("(//button[text()='Заказать'])[2]");
 
     // МЕТОДЫ
 
@@ -67,11 +65,11 @@ public class MainPage {
 
     // Кнопки заказа
     public void clickOrderUp() {
-        driver.findElement(By.xpath("//button[text()='Заказать']")).click();
+        driver.findElement(orderButtonUp).click();
     }
 
     public void clickOrderDown() {
-        WebElement button = driver.findElement(By.xpath("(//button[text()='Заказать'])[2]"));
+        WebElement button = driver.findElement(orderButtonDown);
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", button);
         button.click();
     }
